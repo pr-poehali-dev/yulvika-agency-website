@@ -25,6 +25,13 @@ export default function Index() {
   const [isContactSubmitting, setIsContactSubmitting] = useState(false);
   const [isContactSubmitted, setIsContactSubmitted] = useState(false);
 
+  const scrollToContactForm = () => {
+    const contactSection = document.getElementById('contacts');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const openModal = (tariffName: string, tariffPrice: string) => {
     setModalState({ isOpen: true, tariffName, tariffPrice });
   };
@@ -38,19 +45,19 @@ export default function Index() {
     setIsContactSubmitting(true);
 
     const emailData = {
-      to: "zayavki@юлвика.рф",
-      subject: "Новая заявка с сайта ЮЛВИКА",
-      body: `
-        Новая заявка с формы обратной связи:
-        
-        Имя: ${contactForm.name}
-        Компания: ${contactForm.company}
-        Email: ${contactForm.email}
-        Телефон: ${contactForm.phone}
-        Сообщение: ${contactForm.message}
-        
-        Дата заявки: ${new Date().toLocaleString('ru-RU')}
-      `
+      to: "zayavki@xn--80aegecargbg8bk.xn--p1ai", // zayavki@юлвика.рф в punycode
+      subject: encodeURIComponent("Новая заявка с сайта ЮЛВИКА"),
+      body: encodeURIComponent(`
+Новая заявка с формы обратной связи:
+
+Имя: ${contactForm.name}
+Компания: ${contactForm.company}
+Email: ${contactForm.email}
+Телефон: ${contactForm.phone}
+Сообщение: ${contactForm.message}
+
+Дата заявки: ${new Date().toLocaleString('ru-RU')}
+      `)
     };
 
     console.log('Отправка контактной формы:', emailData);
@@ -83,7 +90,7 @@ export default function Index() {
             <a href="#advantages" className="text-muted-foreground hover:text-primary transition-colors">Преимущества</a>
             <a href="#contacts" className="text-muted-foreground hover:text-primary transition-colors">Контакты</a>
           </nav>
-          <Button className="hidden md:inline-flex">Получить консультацию</Button>
+          <Button className="hidden md:inline-flex" onClick={scrollToContactForm}>Получить консультацию</Button>
           <Button variant="outline" size="sm" className="md:hidden">
             <Icon name="Menu" size={20} />
           </Button>
@@ -104,7 +111,7 @@ export default function Index() {
             Гарантируем результат в кратчайшие сроки.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="text-lg px-8">
+            <Button size="lg" className="text-lg px-8" onClick={scrollToContactForm}>
               Подобрать персонал
               <Icon name="ArrowRight" size={20} className="ml-2" />
             </Button>

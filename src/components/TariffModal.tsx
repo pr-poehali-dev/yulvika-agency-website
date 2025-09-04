@@ -25,18 +25,18 @@ export default function TariffModal({ isOpen, onClose, tariffName, tariffPrice }
 
     // Имитация отправки на сервер
     const emailData = {
-      to: "info@юлвика.рф",
-      subject: `Заявка на тариф ${tariffName}`,
-      body: `
-        Новая заявка на тариф: ${tariffName}
-        Цена: ${tariffPrice}
-        
-        Данные клиента:
-        Имя: ${formData.name}
-        Телефон: ${formData.phone}
-        
-        Дата заявки: ${new Date().toLocaleString('ru-RU')}
-      `
+      to: "info@xn--80aegecargbg8bk.xn--p1ai", // info@юлвика.рф в punycode
+      subject: encodeURIComponent(`Заявка на тариф ${tariffName}`),
+      body: encodeURIComponent(`
+Новая заявка на тариф: ${tariffName}
+Цена: ${tariffPrice}
+
+Данные клиента:
+Имя: ${formData.name}
+Телефон: ${formData.phone}
+
+Дата заявки: ${new Date().toLocaleString('ru-RU')}
+      `)
     };
 
     // В реальном проекте здесь был бы API вызов
