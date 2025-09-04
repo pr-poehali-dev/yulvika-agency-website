@@ -1,11 +1,71 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
+import TariffModal from "@/components/TariffModal";
 
 export default function Index() {
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    tariffName: string;
+    tariffPrice: string;
+  }>({ isOpen: false, tariffName: "", tariffPrice: "" });
+
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
+
+  const [isContactSubmitting, setIsContactSubmitting] = useState(false);
+  const [isContactSubmitted, setIsContactSubmitted] = useState(false);
+
+  const openModal = (tariffName: string, tariffPrice: string) => {
+    setModalState({ isOpen: true, tariffName, tariffPrice });
+  };
+
+  const closeModal = () => {
+    setModalState({ isOpen: false, tariffName: "", tariffPrice: "" });
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsContactSubmitting(true);
+
+    const emailData = {
+      to: "zayavki@юлвика.рф",
+      subject: "Новая заявка с сайта ЮЛВИКА",
+      body: `
+        Новая заявка с формы обратной связи:
+        
+        Имя: ${contactForm.name}
+        Компания: ${contactForm.company}
+        Email: ${contactForm.email}
+        Телефон: ${contactForm.phone}
+        Сообщение: ${contactForm.message}
+        
+        Дата заявки: ${new Date().toLocaleString('ru-RU')}
+      `
+    };
+
+    console.log('Отправка контактной формы:', emailData);
+    
+    setTimeout(() => {
+      setIsContactSubmitting(false);
+      setIsContactSubmitted(true);
+      setContactForm({ name: "", company: "", email: "", phone: "", message: "" });
+      
+      setTimeout(() => {
+        setIsContactSubmitted(false);
+      }, 3000);
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -47,10 +107,6 @@ export default function Index() {
             <Button size="lg" className="text-lg px-8">
               Подобрать персонал
               <Icon name="ArrowRight" size={20} className="ml-2" />
-            </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8">
-              Наши кейсы
-              <Icon name="FileText" size={20} className="ml-2" />
             </Button>
           </div>
         </div>
@@ -130,7 +186,7 @@ export default function Index() {
                   <Icon name="Check" size={16} className="text-green-600 flex-shrink-0" />
                   <span className="text-sm">Email поддержка</span>
                 </div>
-                <Button className="w-full mt-6" variant="outline">Выбрать план</Button>
+                <Button className="w-full mt-6" variant="outline" onClick={() => openModal("Лайт", "от 50 000₽")}>Выбрать план</Button>
               </CardContent>
             </Card>
 
@@ -168,7 +224,7 @@ export default function Index() {
                   <Icon name="Check" size={16} className="text-green-600 flex-shrink-0" />
                   <span className="text-sm">Психологическое тестирование</span>
                 </div>
-                <Button className="w-full mt-6">Выбрать план</Button>
+                <Button className="w-full mt-6" onClick={() => openModal("Стандарт", "от 80 000₽")}>Выбрать план</Button>
               </CardContent>
             </Card>
 
@@ -203,7 +259,7 @@ export default function Index() {
                   <Icon name="Check" size={16} className="text-green-600 flex-shrink-0" />
                   <span className="text-sm">Executive поиск</span>
                 </div>
-                <Button className="w-full mt-6" variant="outline">Выбрать план</Button>
+                <Button className="w-full mt-6" variant="outline" onClick={() => openModal("Профи", "от 150 000₽")}>Выбрать план</Button>
               </CardContent>
             </Card>
           </div>
@@ -280,7 +336,7 @@ export default function Index() {
                   </div>
                   <div>
                     <div className="font-semibold">Телефон</div>
-                    <div className="text-muted-foreground">+7 (495) 123-45-67</div>
+                    <div className="text-muted-foreground">+7 919 903 9250</div>
                   </div>
                 </div>
                 
@@ -290,7 +346,7 @@ export default function Index() {
                   </div>
                   <div>
                     <div className="font-semibold">Email</div>
-                    <div className="text-muted-foreground">info@ulvika.ru</div>
+                    <div className="text-muted-foreground">info@юлвика.рф</div>
                   </div>
                 </div>
                 
@@ -322,36 +378,85 @@ export default function Index() {
                 <CardTitle>Форма обратной связи</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium">Имя *</label>
-                  <Input placeholder="Введите ваше имя" className="mt-1" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Компания *</label>
-                  <Input placeholder="Название компании" className="mt-1" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Email *</label>
-                  <Input type="email" placeholder="your@email.com" className="mt-1" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Телефон</label>
-                  <Input placeholder="+7 (___) ___-__-__" className="mt-1" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Сообщение</label>
-                  <Textarea 
-                    placeholder="Опишите ваши потребности в персонале..."
-                    className="mt-1 min-h-[100px]"
-                  />
-                </div>
-                <Button className="w-full">
-                  Отправить заявку
-                  <Icon name="Send" size={18} className="ml-2" />
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  * Обязательные поля. Мы свяжемся с вами в течение 2 часов в рабочее время.
-                </p>
+                {isContactSubmitted ? (
+                  <div className="text-center py-6">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Icon name="Check" size={32} className="text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Сообщение отправлено!</h3>
+                    <p className="text-muted-foreground">
+                      Мы свяжемся с вами в ближайшее время
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleContactSubmit} className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium">Имя *</label>
+                      <Input 
+                        required
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
+                        placeholder="Введите ваше имя" 
+                        className="mt-1" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Компания *</label>
+                      <Input 
+                        required
+                        value={contactForm.company}
+                        onChange={(e) => setContactForm({...contactForm, company: e.target.value})}
+                        placeholder="Название компании" 
+                        className="mt-1" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Email *</label>
+                      <Input 
+                        required
+                        type="email" 
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
+                        placeholder="your@email.com" 
+                        className="mt-1" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Телефон</label>
+                      <Input 
+                        value={contactForm.phone}
+                        onChange={(e) => setContactForm({...contactForm, phone: e.target.value})}
+                        placeholder="+7 (___) ___-__-__" 
+                        className="mt-1" 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Сообщение</label>
+                      <Textarea 
+                        value={contactForm.message}
+                        onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
+                        placeholder="Опишите ваши потребности в персонале..."
+                        className="mt-1 min-h-[100px]"
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" disabled={isContactSubmitting}>
+                      {isContactSubmitting ? (
+                        <>
+                          <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+                          Отправляем...
+                        </>
+                      ) : (
+                        <>
+                          Отправить заявку
+                          <Icon name="Send" size={18} className="ml-2" />
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-muted-foreground">
+                      * Обязательные поля. Мы свяжемся с вами в течение 2 часов в рабочее время.
+                    </p>
+                  </form>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -397,8 +502,8 @@ export default function Index() {
             <div>
               <h4 className="font-semibold mb-4">Контакты</h4>
               <div className="space-y-2 text-sm">
-                <div className="text-primary-foreground/70">+7 (495) 123-45-67</div>
-                <div className="text-primary-foreground/70">info@ulvika.ru</div>
+                <div className="text-primary-foreground/70">+7 919 903 9250</div>
+                <div className="text-primary-foreground/70">info@юлвика.рф</div>
                 <div className="text-primary-foreground/70">Москва, ул. Деловая, 15</div>
               </div>
             </div>
@@ -415,6 +520,13 @@ export default function Index() {
           </div>
         </div>
       </footer>
+      
+      <TariffModal 
+        isOpen={modalState.isOpen}
+        onClose={closeModal}
+        tariffName={modalState.tariffName}
+        tariffPrice={modalState.tariffPrice}
+      />
     </div>
   );
 }
