@@ -45,7 +45,7 @@ export default function Index() {
     setIsContactSubmitting(true);
 
     const emailData = {
-      to: "info.ulvika@gmail.com"
+      to: "info.ulvika@gmail.com",
       subject: encodeURIComponent("Новая заявка с сайта ЮЛВИКА"),
       body: encodeURIComponent(`
 Новая заявка с формы обратной связи:
