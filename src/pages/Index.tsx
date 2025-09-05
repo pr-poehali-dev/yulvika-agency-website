@@ -45,7 +45,7 @@ export default function Index() {
     setIsContactSubmitting(true);
 
     const emailData = {
-      to: "zayavki@xn--80aegecargbg8bk.xn--p1ai", // zayavki@юлвика.рф в punycode
+      to: "info.ulvika@gmail.com"
       subject: encodeURIComponent("Новая заявка с сайта ЮЛВИКА"),
       body: encodeURIComponent(`
 Новая заявка с формы обратной связи:
@@ -510,7 +510,7 @@ Email: ${contactForm.email}
               <h4 className="font-semibold mb-4">Контакты</h4>
               <div className="space-y-2 text-sm">
                 <div className="text-primary-foreground/70">+7 919 903 9250</div>
-                <div className="text-primary-foreground/70">info@юлвика.рф</div>
+                <div className="text-primary-foreground/70">info.ulvika@gmail.com</div>
                 <div className="text-primary-foreground/70">Москва, ул. Деловая, 15</div>
               </div>
             </div>
@@ -518,7 +518,8 @@ Email: ${contactForm.email}
           
           <div className="border-t border-primary-foreground/20 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
             <div className="text-primary-foreground/70">
-              © 2024 ЮЛВИКА. Все права защищены.
+              © 2024 ЮЛВИКА. Все права защищены.<br />
+              ИНН 6671150809 | ОГРН 1216600017237
             </div>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-primary-foreground/70 hover:text-primary-foreground">Политика конфиденциальности</a>

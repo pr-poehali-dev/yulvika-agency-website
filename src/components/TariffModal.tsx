@@ -25,7 +25,7 @@ export default function TariffModal({ isOpen, onClose, tariffName, tariffPrice }
 
     // Имитация отправки на сервер
     const emailData = {
-      to: "info@xn--80aegecargbg8bk.xn--p1ai", // info@юлвика.рф в punycode
+      to: "info.ulvika@gmail.com"
       subject: encodeURIComponent(`Заявка на тариф ${tariffName}`),
       body: encodeURIComponent(`
 Новая заявка на тариф: ${tariffName}
