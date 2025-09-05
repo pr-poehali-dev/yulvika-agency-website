@@ -23,37 +23,40 @@ export default function TariffModal({ isOpen, onClose, tariffName, tariffPrice }
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Имитация отправки на сервер
-    const emailData = {
-      to: "info.ulvika@gmail.com",
-      subject: encodeURIComponent(`Заявка на тариф ${tariffName}`),
-      body: encodeURIComponent(`
-Новая заявка на тариф: ${tariffName}
-Цена: ${tariffPrice}
+    try {
+      // Отправляем данные на PHP API
+      const response = await fetch('/api/save-tariff.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          tariffName: tariffName
+        })
+      });
 
-Данные клиента:
-Имя: ${formData.name}
-Телефон: ${formData.phone}
+      const result = await response.json();
 
-Дата заявки: ${new Date().toLocaleString('ru-RU')}
-      `)
-    };
-
-    // В реальном проекте здесь был бы API вызов
-    console.log('Отправка данных:', emailData);
-    
-    // Имитация задержки сети
-    setTimeout(() => {
+      if (result.success) {
+        setIsSubmitted(true);
+        
+        // Закрыть модальное окно через 2 секунды после успешной отправки
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: "", phone: "" });
+          onClose();
+        }, 2000);
+      } else {
+        throw new Error(result.message || 'Ошибка при отправке заявки');
+      }
+    } catch (error) {
+      console.error('Error submitting tariff form:', error);
+      alert('Произошла ошибка при отправке заявки. Попробуйте еще раз.');
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-      
-      // Закрыть модальное окно через 2 секунды после успешной отправки
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({ name: "", phone: "" });
-        onClose();
-      }, 2000);
-    }, 1000);
+    }
   };
 
   if (!isOpen) return null;

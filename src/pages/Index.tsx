@@ -44,33 +44,39 @@ export default function Index() {
     e.preventDefault();
     setIsContactSubmitting(true);
 
-    const emailData = {
-      to: "info.ulvika@gmail.com",
-      subject: encodeURIComponent("Новая заявка с сайта ЮЛВИКА"),
-      body: encodeURIComponent(`
-Новая заявка с формы обратной связи:
+    try {
+      // Отправляем данные на PHP API
+      const response = await fetch('/api/save-contact.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: contactForm.name,
+          phone: contactForm.phone,
+          email: contactForm.email,
+          message: contactForm.message
+        })
+      });
 
-Имя: ${contactForm.name}
-Компания: ${contactForm.company}
-Email: ${contactForm.email}
-Телефон: ${contactForm.phone}
-Сообщение: ${contactForm.message}
+      const result = await response.json();
 
-Дата заявки: ${new Date().toLocaleString('ru-RU')}
-      `)
-    };
-
-    console.log('Отправка контактной формы:', emailData);
-    
-    setTimeout(() => {
+      if (result.success) {
+        setIsContactSubmitted(true);
+        setContactForm({ name: "", company: "", email: "", phone: "", message: "" });
+        
+        setTimeout(() => {
+          setIsContactSubmitted(false);
+        }, 3000);
+      } else {
+        throw new Error(result.message || 'Ошибка при отправке заявки');
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      alert('Произошла ошибка при отправке заявки. Попробуйте еще раз.');
+    } finally {
       setIsContactSubmitting(false);
-      setIsContactSubmitted(true);
-      setContactForm({ name: "", company: "", email: "", phone: "", message: "" });
-      
-      setTimeout(() => {
-        setIsContactSubmitted(false);
-      }, 3000);
-    }, 1000);
+    }
   };
 
   return (
